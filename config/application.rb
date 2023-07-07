@@ -35,5 +35,7 @@ module App
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.relative_url_root = ENV.fetch('RAILS_RELATIVE_URL_ROOT', '/')
   end
 end
