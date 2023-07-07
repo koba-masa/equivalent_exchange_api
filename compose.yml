@@ -10,6 +10,7 @@ services:
       APP_DATABASE_HOST: db
       APP_DATABASE_USERNAME: postgres
       APP_DATABASE_PASSWORD: postgres123
+      RAILS_RELATIVE_URL_ROOT: /equivalent_exchange
     volumes:
       - .:/app
       - app_bundle:/usr/local/bundle
