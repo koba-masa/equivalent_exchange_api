@@ -1,0 +1,53 @@
+name: CI
+
+on: [push]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    env:
+      RAILS_ENV: test
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      APP_DATABASE_HOST: 127.0.0.1
+      APP_DATABASE_USERNAME: postgres
+      APP_DATABASE_PASSWORD: postgres123
+      TEST_SELENIUM_SERVER: 127.0.0.1
+      TEST_WEB_SERVER: 127.0.0.1
+
+    services:
+      db:
+        image: postgres:14.6
+        env:
+          POSTGRES_USERNAME: postgres
+          POSTGRES_PASSWORD: postgres123
+          POSTGRES_INITDB_ARGS: "-E UTF8"
+          TZ: "Asia/Tokyo"
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.3
+          bundler-cache: true
+
+      - name: DB Migration
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:migrate
+
+      - name: Run RSpec
+        run: bundle exec rspec --tag ~type:scraping
+
+      - name: Run RuboCop
+        run: bundle exec rubocop
