@@ -1,0 +1,54 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+  NewCops: enable
+
+Layout/ExtraSpacing:
+  AllowForAlignment: false
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/ClassLength:
+  CountAsOne: ["array", "hash"]
+
+Metrics/BlockLength:
+  CountAsOne: ["array", "hash"]
+  Exclude:
+    - 'config/**/*'
+    - 'spec/**/*'
+
+Metrics/MethodLength:
+  Max: 20
+  CountAsOne: ["array", "hash"]
+  Exclude:
+    - 'db/migrate/*'
+
+Metrics/ModuleLength:
+  CountAsOne: ["array", "hash"]
+  Exclude:
+    - 'spec/**/*'
+
+Style/Documentation:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Exclude:
+    - 'config/routes.rb'
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
