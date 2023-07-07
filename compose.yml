@@ -5,12 +5,35 @@ services:
     build:
       context: .
       dockerfile: ./docker_files/ruby
+    environment:
+      RAILS_ENV: development
+      APP_DATABASE_HOST: db
+      APP_DATABASE_USERNAME: postgres
+      APP_DATABASE_PASSWORD: postgres123
     volumes:
       - .:/app
       - app_bundle:/usr/local/bundle
     ports:
       - 3000:3000
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    image: postgres:14.6
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+      TZ: "Asia/Tokyo"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
 
 volumes:
   app_bundle:
+    external: false
+  db_data:
     external: false
