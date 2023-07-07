@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker_files/ruby
+    volumes:
+      - .:/app
+      - app_bundle:/usr/local/bundle
+    ports:
+      - 3000:3000
+
+volumes:
+  app_bundle:
+    external: false
