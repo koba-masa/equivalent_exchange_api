@@ -58,3 +58,6 @@ RSpec/IndexedLet:
 
 RSpec/MultipleExpectations:
   Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
