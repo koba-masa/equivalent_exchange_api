@@ -3,7 +3,7 @@
 module V1
   class LoginController < ApplicationController
     def login
-      user = User.find_by(login_id:)
+      user = ::User.find_by(login_id:)
       if user&.authenticate(password)
         # TODO: Implement JWT
         render json: { token: 'token' }
