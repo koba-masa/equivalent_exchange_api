@@ -7,7 +7,7 @@ class Stock < ApplicationRecord
   validates :status, presence: true
   validates :image, presence: true
 
-  enum status: { in_stock: 0, cancel: 10, traded: 20 }
+  enum status: { in_stock: 0, cancel: 10, trading: 20, traded: 30 }
 
   def image_url
     "#{Settings.stock.image.domain}/#{Settings.aws.s3.stock_image_prefix}/#{image}"
