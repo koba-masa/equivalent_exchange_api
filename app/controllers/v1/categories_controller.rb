@@ -3,11 +3,11 @@
 module V1
   class CategoriesController < ApplicationController
     def index
-      @categories = Category.all
+      @categories = ::Category.all
     end
 
     def create
-      @category = Category.new(category_params)
+      @category = ::Category.new(category_params)
       @category.save!
     rescue ActiveRecord::RecordInvalid
       render json: { errors: @category.errors }, status: :bad_request

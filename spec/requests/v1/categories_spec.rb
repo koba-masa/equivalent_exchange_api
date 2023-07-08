@@ -7,7 +7,7 @@ RSpec.describe 'V1::Categories' do
     subject(:get_categories) { get v1_categories_url }
 
     shared_examples 'normal get categies' do
-      it 'カテゴリ一覧が取得できること' do
+      it do
         get_categories
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body).to eq(expected_response)
