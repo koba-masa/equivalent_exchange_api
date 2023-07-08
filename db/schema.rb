@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_08_031707) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_08_051218) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -20,6 +20,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_08_031707) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_categories_on_name", unique: true
+  end
+
+  create_table "goods", comment: "商品", force: :cascade do |t|
+    t.bigint "category_id", null: false, comment: "カテゴリ"
+    t.string "name", limit: 128, null: false, comment: "商品名"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id", "name"], name: "index_goods_on_category_id_and_name", unique: true
+    t.index ["category_id"], name: "index_goods_on_category_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "ユーザー", force: :cascade do |t|
@@ -33,4 +42,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_08_031707) do
     t.index ["login_id"], name: "index_users_on_login_id", unique: true
   end
 
+  add_foreign_key "goods", "categories"
 end
