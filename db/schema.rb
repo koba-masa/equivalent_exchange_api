@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_08_053404) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_08_140457) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -40,6 +40,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_08_053404) do
     t.index ["category_id"], name: "index_goods_on_category_id"
   end
 
+  create_table "stocks", comment: "在庫", force: :cascade do |t|
+    t.uuid "user_id", null: false, comment: "ユーザー"
+    t.bigint "character_id", null: false, comment: "キャラクター"
+    t.integer "status", limit: 2, default: 0, null: false, comment: "ステータス"
+    t.string "image", limit: 128, null: false, comment: "画像ファイル名"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_stocks_on_character_id"
+    t.index ["user_id"], name: "index_stocks_on_user_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "ユーザー", force: :cascade do |t|
     t.string "login_id", null: false, comment: "ログインID"
     t.string "password_digest", null: false, comment: "パスワード"
@@ -53,4 +64,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_08_053404) do
 
   add_foreign_key "characters", "goods"
   add_foreign_key "goods", "categories"
+  add_foreign_key "stocks", "characters"
+  add_foreign_key "stocks", "users"
 end
