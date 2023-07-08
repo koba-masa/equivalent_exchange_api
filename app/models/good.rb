@@ -4,4 +4,6 @@ class Good < ApplicationRecord
   belongs_to :category
 
   validates :name, presence: true, length: { maximum: 128 }, uniqueness: { scope: :category_id }
+
+  default_scope -> { order(:name) }
 end
