@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_07_131826) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_08_031707) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "categories", comment: "カテゴリ", force: :cascade do |t|
+    t.string "name", limit: 128, null: false, comment: "カテゴリ名"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_categories_on_name", unique: true
+  end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "ユーザー", force: :cascade do |t|
     t.string "login_id", null: false, comment: "ログインID"
