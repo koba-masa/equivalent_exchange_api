@@ -56,4 +56,50 @@ RSpec.describe 'V1::User::Stocks' do
       end
     end
   end
+
+  describe 'GET /v1/users/:user_id/stocks/:id' do
+    subject(:get_stock) { get v1_user_stock_path(user_id:, id: stock_id) }
+
+    let(:user_id) { user.id }
+    let(:stock) { create(:stock, user:, character: character1, status: 0) }
+    let(:another_user_stock) { create(:stock, user: another_user, character: character1, status: 0) }
+
+    context 'when stock exists' do
+      let(:stock_id) { stock.id }
+      let(:expected_response) do
+        {
+          'category_name' => category1.name, 'good_name' => good1.name, 'character_name' => character1.name,
+          'id' => stock.id, 'status' => stock.status_label, 'image' => stock.image_url
+        }
+      end
+
+      it 'returns stock' do
+        get_stock
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq(expected_response)
+      end
+    end
+
+    context 'when stock does not exist' do
+      let(:stock_id) { 0 }
+      let(:expected_response) { {} }
+
+      it 'returns error' do
+        get_stock
+        expect(response).to have_http_status(:not_found)
+        expect(response.parsed_body).to eq(expected_response)
+      end
+    end
+
+    context 'when stock belongs to another user' do
+      let(:stock_id) { another_user_stock.id }
+      let(:expected_response) { {} }
+
+      it 'returns error' do
+        get_stock
+        expect(response).to have_http_status(:not_found)
+        expect(response.parsed_body).to eq(expected_response)
+      end
+    end
+  end
 end

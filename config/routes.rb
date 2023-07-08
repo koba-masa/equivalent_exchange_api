@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     end
 
     resources :users do
-      resources :stocks, module: :user, only: %i[index]
+      resources :stocks, module: :user, only: %i[index show]
     end
   end
 end
