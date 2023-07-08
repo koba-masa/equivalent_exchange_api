@@ -159,4 +159,87 @@ RSpec.describe 'V1::User::Stocks' do
       end
     end
   end
+
+  describe 'PATCH /v1/users/:user_id/stocks/:id' do
+    subject(:update_stock) { patch v1_user_stock_path(user_id:, id: stock_id), params: }
+
+    let(:user_id) { user.id }
+
+    let(:user_stock_in_stock) { create(:stock, user:, character: character1, status: 0) }
+    let(:user_stock_canceled) { create(:stock, user:, character: character1, status: 10) }
+    let(:user_stock_trading) { create(:stock, user:, character: character1, status: 20) }
+    let(:user_stock_traded) { create(:stock, user:, character: character1, status: 30) }
+    let(:another_user_stock) { create(:stock, user: another_user, character: character1, status: 20) }
+
+    let(:params) do
+      {
+        stock: {
+          id: stock_id,
+        },
+      }
+    end
+
+    context 'when stock belongs to user' do
+      shared_examples 'can not update stock to canceled' do
+        it do
+          update_stock
+          expect(response).to have_http_status(:bad_request)
+          expect(response.parsed_body['errors']['status']).to eq(['can update only in_stock stock'])
+        end
+      end
+
+      context 'when stock is in_stock' do
+        let(:stock_id) { user_stock_in_stock.id }
+
+        it 'returns stocks' do
+          update_stock
+          expect(response).to have_http_status(:success)
+          expect(response.parsed_body['status']).to eq('取り下げ')
+        end
+      end
+
+      # TODO: 取り下げを取り下げに変更することはできるのか?
+      context 'when stock is canceled' do
+        let(:stock_id) { user_stock_canceled.id }
+
+        it 'returns stocks' do
+          update_stock
+          expect(response).to have_http_status(:success)
+          expect(response.parsed_body['status']).to eq('取り下げ')
+        end
+      end
+
+      context 'when stock is trading' do
+        let(:stock_id) { user_stock_trading.id }
+
+        it_behaves_like 'can not update stock to canceled'
+      end
+
+      context 'when stock is traded' do
+        let(:stock_id) { user_stock_traded.id }
+
+        it_behaves_like 'can not update stock to canceled'
+      end
+    end
+
+    context 'when stock belongs to another user' do
+      let(:stock_id) { another_user_stock.id }
+
+      it 'returns error' do
+        update_stock
+        expect(response).to have_http_status(:not_found)
+        expect(response.parsed_body).to eq({})
+      end
+    end
+
+    context 'when stock does not exist' do
+      let(:stock_id) { 0 }
+
+      it 'returns error' do
+        update_stock
+        expect(response).to have_http_status(:not_found)
+        expect(response.parsed_body).to eq({})
+      end
+    end
+  end
 end

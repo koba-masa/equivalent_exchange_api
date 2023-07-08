@@ -29,6 +29,16 @@ module V1
         render json: { errors: { character: ['does not exist'] } }, status: :bad_request
       end
 
+      def update
+        @stock = ::Stock.includes(character: { good: :category }).find_by!(user_id: user.id, id: stock_id)
+        @stock.update!(status: :canceled)
+      rescue ActiveRecord::RecordNotFound
+        # TODO: エラーメッセージの実装を行う
+        render json: {}, status: :not_found
+      rescue ActiveRecord::RecordInvalid
+        render json: { errors: @stock.errors }, status: :bad_request
+      end
+
       private
 
       # TODO: このメソッドは ApplicationController に移動する
