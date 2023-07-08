@@ -102,4 +102,61 @@ RSpec.describe 'V1::User::Stocks' do
       end
     end
   end
+
+  describe 'POST /v1/users/:user_id/stocks' do
+    subject(:create_stock) { post v1_user_stocks_path(user_id:), params: }
+
+    let(:user_id) { user.id }
+
+    context 'when user request one stock' do
+      let(:params) do
+        {
+          stock: {
+            character_id: character1.id,
+            quantity: 1,
+          },
+        }
+      end
+
+      it 'returns stocks' do
+        create_stock
+        expect(response).to have_http_status(:success)
+        expect(response.parsed_body['stocks'].size).to eq(1)
+      end
+    end
+
+    context 'when user request multiple stocks' do
+      let(:params) do
+        {
+          stock: {
+            character_id: character1.id,
+            quantity: 10,
+          },
+        }
+      end
+
+      it 'returns stocks' do
+        create_stock
+        expect(response).to have_http_status(:success)
+        expect(response.parsed_body['stocks'].size).to eq(10)
+      end
+    end
+
+    context 'when user request stock with invalid character id' do
+      let(:params) do
+        {
+          stock: {
+            character_id: 0,
+            quantity: 10,
+          },
+        }
+      end
+
+      it 'returns error' do
+        create_stock
+        expect(response).to have_http_status(:bad_request)
+        expect(response.parsed_body['errors']['character']).to eq(['does not exist'])
+      end
+    end
+  end
 end
