@@ -21,6 +21,12 @@ class Want < ApplicationRecord
     CAN_CANCEL_STATUSES.include?(status_was)
   end
 
+  def candidate_stocks
+    return [] unless untrading?
+
+    ::Stock.untrading.where(character:).where.not(user:).includes(:user)
+  end
+
   private
 
   def validate_status_when_canceled

@@ -13,6 +13,8 @@ class Stock < ApplicationRecord
   STATUS_LABEL = { untrading: '未交換', canceled: '取り下げ', trading: '交渉中', traded: '交換済み' }.freeze
   CAN_CANCEL_STATUSES = %w[untrading canceled].freeze
 
+  scope :untrading, -> { where(status: :untrading) }
+
   def image_url
     "#{Settings.stock.image.domain}/#{Settings.aws.s3.stock_image_prefix}/#{image}"
   end
