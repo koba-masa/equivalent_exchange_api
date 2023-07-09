@@ -165,7 +165,7 @@ RSpec.describe 'V1::User::Stocks' do
 
     let(:user_id) { user.id }
 
-    let(:user_stock_in_stock) { create(:stock, user:, character: character1, status: 0) }
+    let(:user_stock_untrading) { create(:stock, user:, character: character1, status: 0) }
     let(:user_stock_canceled) { create(:stock, user:, character: character1, status: 10) }
     let(:user_stock_trading) { create(:stock, user:, character: character1, status: 20) }
     let(:user_stock_traded) { create(:stock, user:, character: character1, status: 30) }
@@ -184,12 +184,12 @@ RSpec.describe 'V1::User::Stocks' do
         it do
           update_stock
           expect(response).to have_http_status(:bad_request)
-          expect(response.parsed_body['errors']['status']).to eq(['can update only in_stock stock'])
+          expect(response.parsed_body['errors']['status']).to eq(['can update only untrading stock'])
         end
       end
 
-      context 'when stock is in_stock' do
-        let(:stock_id) { user_stock_in_stock.id }
+      context 'when stock is untrading' do
+        let(:stock_id) { user_stock_untrading.id }
 
         it 'returns stocks' do
           update_stock

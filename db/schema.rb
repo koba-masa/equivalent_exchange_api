@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_08_140457) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_09_014158) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -62,8 +62,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_08_140457) do
     t.index ["login_id"], name: "index_users_on_login_id", unique: true
   end
 
+  create_table "wants", comment: "欲しいもの", force: :cascade do |t|
+    t.uuid "user_id", null: false, comment: "ユーザー"
+    t.bigint "character_id", null: false, comment: "キャラクター"
+    t.integer "status", limit: 2, default: 0, null: false, comment: "ステータス"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_wants_on_character_id"
+    t.index ["user_id"], name: "index_wants_on_user_id"
+  end
+
   add_foreign_key "characters", "goods"
   add_foreign_key "goods", "categories"
   add_foreign_key "stocks", "characters"
   add_foreign_key "stocks", "users"
+  add_foreign_key "wants", "characters"
+  add_foreign_key "wants", "users"
 end

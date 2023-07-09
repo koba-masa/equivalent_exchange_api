@@ -20,7 +20,7 @@ module V1
           stock = ::Stock.create(
             user:,
             character:,
-            status: :in_stock,
+            status: :untrading,
             image: 'sample.png', # TODO: 画像のアップロード機能を実装する&サムネイルを生成する
           )
           @created_stocks.push(stock)
