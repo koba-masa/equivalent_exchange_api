@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 class Want < ApplicationRecord
-  validates :status, presence: true
-
   belongs_to :user
   belongs_to :character
 
   validates :status, presence: true
-  validate :can_cancel?, on: :update, if: proc { |stock| stock.status_changed? && stock.canceled? }
+  validate :validate_status_when_canceled, on: :update, if: proc { |want| want.status_changed? && want.canceled? }
 
   enum status: { untrading: 0, canceled: 10, trading: 20, traded: 30 }
 
