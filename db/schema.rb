@@ -51,6 +51,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_161144) do
     t.index ["user_id"], name: "index_stocks_on_user_id"
   end
 
+  create_table "tradings", comment: "交換", force: :cascade do |t|
+    t.bigint "want_id", null: false, comment: "欲しいもの"
+    t.bigint "stock_id", null: false, comment: "在庫"
+    t.integer "status", default: 20, null: false, comment: "ステータス"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stock_id"], name: "index_tradings_on_stock_id"
+    t.index ["want_id"], name: "index_tradings_on_want_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "ユーザー", force: :cascade do |t|
     t.string "login_id", null: false, comment: "ログインID"
     t.string "password_digest", null: false, comment: "パスワード"
@@ -76,6 +86,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_161144) do
   add_foreign_key "goods", "categories"
   add_foreign_key "stocks", "characters"
   add_foreign_key "stocks", "users"
+  add_foreign_key "tradings", "stocks"
+  add_foreign_key "tradings", "wants"
   add_foreign_key "wants", "characters"
   add_foreign_key "wants", "users"
 
