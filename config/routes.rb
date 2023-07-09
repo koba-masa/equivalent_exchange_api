@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
     resources :users do
       resources :stocks, module: :user, only: %i[index show create update]
+      resources :wants, module: :user, only: %i[index show create update]
     end
   end
 end
