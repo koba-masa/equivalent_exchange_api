@@ -4,7 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'V1::User::Wants' do
   let(:user) { create(:user, display_name: 'テスト用ユーザ') }
-  let(:another_user) { create(:user, display_name: '別ユーザ') }
+  let(:another_user1) { create(:user, display_name: '別ユーザ1') }
+  let(:another_user2) { create(:user, display_name: '別ユーザ2') }
   let(:category1) { create(:category, name: 'カテゴリ1') }
   let(:category2) { create(:category, name: 'カテゴリ2') }
   let(:good1) { create(:good, name: 'グッズ1', category: category1) }
@@ -19,7 +20,7 @@ RSpec.describe 'V1::User::Wants' do
 
     let(:want1) { create(:want, user:, character: character1, status: 0) }
     let(:want2) { create(:want, user:, character: character1, status: 20) }
-    let(:want3) { create(:want, user: another_user, character: character2, status: 0) }
+    let(:want3) { create(:want, user: another_user1, character: character2, status: 0) }
 
     context 'when user has wants' do
       let(:expected_response) do
@@ -61,22 +62,74 @@ RSpec.describe 'V1::User::Wants' do
     subject(:get_want) { get v1_user_want_path(user_id:, id: want_id) }
 
     let(:user_id) { user.id }
-    let(:want) { create(:want, user:, character: character1, status: 0) }
-    let(:another_user_want) { create(:want, user: another_user, character: character1, status: 0) }
+    let(:want_with_stocks) { create(:want, user:, character: character1, status: 0) }
+    let(:want_without_stocks) { create(:want, user:, character: character2, status: 0) }
+    let(:another_user_want) { create(:want, user: another_user1, character: character1, status: 0) }
+
+    let(:user_stock_untrading) { create(:want, user:, character: character1, status: 0) }
+    let(:another_user1_stock_untrading1) { create(:stock, user: another_user1, character: character1, status: 0) }
+    let(:another_user1_stock_untrading2) { create(:stock, user: another_user1, character: character1, status: 0) }
+    let(:another_user2_stock_untrading1) { create(:stock, user: another_user2, character: character1, status: 0) }
+
+    before do
+      user_stock_untrading
+
+      another_user1_stock_untrading1
+      another_user1_stock_untrading2
+      another_user2_stock_untrading1
+    end
 
     context 'when want exists' do
-      let(:want_id) { want.id }
-      let(:expected_response) do
-        {
-          'category_name' => category1.name, 'good_name' => good1.name, 'character_name' => character1.name,
-          'id' => want.id, 'status' => want.status_label
-        }
+      shared_examples 'returns want' do
+        it do
+          get_want
+          expect(response).to have_http_status(:ok)
+          expect(response.parsed_body).to eq(expected_response)
+        end
       end
 
-      it 'returns want' do
-        get_want
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body).to eq(expected_response)
+      context 'with stock' do
+        let(:want_id) { want_with_stocks.id }
+        let(:expected_response) do
+          {
+            'category_name' => category1.name, 'good_name' => good1.name, 'character_name' => character1.name,
+            'id' => want_with_stocks.id, 'status' => want_with_stocks.status_label,
+            'stocks' => [
+              {
+                'id' => another_user1_stock_untrading1.id,
+                'user_name' => another_user1_stock_untrading1.user.display_name,
+                'status' => another_user1_stock_untrading1.status_label,
+                'image' => another_user1_stock_untrading1.image_url,
+              },
+              {
+                'id' => another_user1_stock_untrading2.id,
+                'user_name' => another_user1_stock_untrading2.user.display_name,
+                'status' => another_user1_stock_untrading2.status_label,
+                'image' => another_user1_stock_untrading2.image_url,
+              },
+              {
+                'id' => another_user2_stock_untrading1.id,
+                'user_name' => another_user2_stock_untrading1.user.display_name,
+                'status' => another_user2_stock_untrading1.status_label,
+                'image' => another_user2_stock_untrading1.image_url,
+              },
+            ]
+          }
+        end
+
+        it_behaves_like 'returns want'
+      end
+
+      context 'without stock' do
+        let(:want_id) { want_without_stocks.id }
+        let(:expected_response) do
+          {
+            'category_name' => category2.name, 'good_name' => good2.name, 'character_name' => character2.name,
+            'id' => want_without_stocks.id, 'status' => want_without_stocks.status_label, 'stocks' => []
+          }
+        end
+
+        it_behaves_like 'returns want'
       end
     end
 
@@ -169,7 +222,7 @@ RSpec.describe 'V1::User::Wants' do
     let(:user_want_canceled) { create(:want, user:, character: character1, status: 10) }
     let(:user_want_trading) { create(:want, user:, character: character1, status: 20) }
     let(:user_want_traded) { create(:want, user:, character: character1, status: 30) }
-    let(:another_user_want) { create(:want, user: another_user, character: character1, status: 20) }
+    let(:another_user_want) { create(:want, user: another_user1, character: character1, status: 20) }
 
     let(:params) do
       {
