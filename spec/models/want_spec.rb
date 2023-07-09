@@ -138,6 +138,7 @@ RSpec.describe Want do
       context 'with wants status is untrading' do
         let(:status) { :untrading }
         let(:expected) do
+          # TODO: another_user1_stock_untrading2は表示しないようにしたい
           [another_user1_stock_untrading1, another_user1_stock_untrading2, another_user1_stock_untrading3,
            another_user2_stock_untrading1]
         end
