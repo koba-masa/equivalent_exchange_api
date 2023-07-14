@@ -8,3 +8,9 @@
 docker-compose up -d
 docker-compose exec app bundle install
 ```
+
+## Scenic
+### 作成
+```sh
+docker-compose exec app bundle exec rails g scenic:view <view_name>
+```
