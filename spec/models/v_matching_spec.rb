@@ -126,21 +126,24 @@ RSpec.describe VMatching do
   end
 
   describe 'self.find_candidate_matching' do
-    subject(:find_candidate_matching) { described_class.find_candidate_matching(my_user_id, my_want_id, your_stock_id) }
+    subject(:find_candidate_matching) do
+      described_class.find_candidate_matching(my_user_id, my_want_id, your_stock_id, your_want_id, my_stock_id)
+    end
 
     let(:my_user_id) { myself.id }
     let(:my_want_id) { my_want2.id }
+    let(:your_stock_id) { other_stock2.id }
+    let(:your_want_id) { other_want1.id }
+    let(:my_stock_id) { my_stock1.id }
 
     context 'when candidate matching exists' do
-      let(:your_stock_id) { other_stock2.id }
-
       it 'return candidate matching' do
-        find_candidate_matching
-        expect(find_candidate_matching).not_to be_nil
-        expect(find_candidate_matching.your_user_id).to eq otherself.id
-        expect(find_candidate_matching.your_stock_id).to eq other_stock2.id
-        expect(find_candidate_matching.your_want_id).to eq other_want1.id
-        expect(find_candidate_matching.my_stock_id).to eq my_stock1.id
+        result = find_candidate_matching
+        expect(result).not_to be_nil
+        expect(result.your_user_id).to eq otherself.id
+        expect(result.your_stock_id).to eq other_stock2.id
+        expect(result.your_want_id).to eq other_want1.id
+        expect(result.my_stock_id).to eq my_stock1.id
       end
     end
 
@@ -148,7 +151,6 @@ RSpec.describe VMatching do
       let(:your_stock_id) { 0 }
 
       it 'return nil' do
-        find_candidate_matching
         expect(find_candidate_matching).to be_nil
       end
     end

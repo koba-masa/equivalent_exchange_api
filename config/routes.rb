@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     post 'login', to: 'login#login'
     resources :stocks, only: %i[index show create update]
     resources :wants, only: %i[index show create update]
+    resources :tradings, only: %i[create update]
 
     resources :categories, only: %i[index create] do
       resources :goods, module: :category, only: %i[index create] do
