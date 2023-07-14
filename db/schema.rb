@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_14_134936) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_14_135650) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -115,5 +115,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_134936) do
      FROM (wants
        JOIN v_characters ON ((wants.character_id = v_characters.character_id)))
     ORDER BY wants.user_id, v_characters.category_id, v_characters.good_id, v_characters.character_id;
+  SQL
+  create_view "v_stocks", sql_definition: <<-SQL
+      SELECT stocks.id AS want_id,
+      stocks.user_id,
+      v_characters.category_name,
+      v_characters.goods_name,
+      v_characters.character_name,
+      v_characters.category_id,
+      v_characters.good_id,
+      v_characters.character_id
+     FROM (stocks
+       JOIN v_characters ON ((stocks.character_id = v_characters.character_id)))
+    ORDER BY stocks.user_id, v_characters.category_id, v_characters.good_id, v_characters.character_id;
   SQL
 end
