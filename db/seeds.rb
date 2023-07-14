@@ -24,7 +24,7 @@ if Rails.env.development?
   character113 = Character.create(good: good11, name: '逢川めぐみ')
   character114 = Character.create(good: good11, name: '東城つかさ')
   character115 = Character.create(good: good11, name: '朝倉可憐')
-  Character.create(good: good11, name: '國見タマ')
+  character116 = Character.create(good: good11, name: '國見タマ')
 
   good12 = Good.create(category: category1, name: 'トレーディングアクリルネームプレート ver.A')
   Character.create(good: good12, name: '茅森月歌')
@@ -101,6 +101,7 @@ if Rails.env.development?
   user3 = User.create(login_id: 'testuser3', password: '#eDcVfR4', password_confirmation: '#eDcVfR4',
                       display_name: 'testuser3', email: 'testuser3@example.com')
   Want.create(user: user3, character: character112)
+  Want.create(user: user3, character: character116)
   Stock.create(user: user3, character: character111, image: 'sample.png')
 
   Want.create(user: user2, character: character323)
