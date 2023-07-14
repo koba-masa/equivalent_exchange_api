@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_09_014158) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_14_135650) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -51,6 +51,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_09_014158) do
     t.index ["user_id"], name: "index_stocks_on_user_id"
   end
 
+  create_table "tradings", comment: "交換", force: :cascade do |t|
+    t.bigint "want_id", null: false, comment: "欲しいもの"
+    t.bigint "stock_id", null: false, comment: "在庫"
+    t.integer "status", default: 20, null: false, comment: "ステータス"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stock_id"], name: "index_tradings_on_stock_id"
+    t.index ["want_id"], name: "index_tradings_on_want_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "ユーザー", force: :cascade do |t|
     t.string "login_id", null: false, comment: "ログインID"
     t.string "password_digest", null: false, comment: "パスワード"
@@ -76,6 +86,47 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_09_014158) do
   add_foreign_key "goods", "categories"
   add_foreign_key "stocks", "characters"
   add_foreign_key "stocks", "users"
+  add_foreign_key "tradings", "stocks"
+  add_foreign_key "tradings", "wants"
   add_foreign_key "wants", "characters"
   add_foreign_key "wants", "users"
+
+  create_view "v_characters", sql_definition: <<-SQL
+      SELECT characters.id AS character_id,
+      categories.name AS category_name,
+      goods.name AS goods_name,
+      characters.name AS character_name,
+      categories.id AS category_id,
+      goods.id AS good_id
+     FROM ((characters
+       JOIN goods ON ((characters.good_id = goods.id)))
+       JOIN categories ON ((goods.category_id = categories.id)))
+    ORDER BY categories.id, goods.id, characters.id;
+  SQL
+  create_view "v_wants", sql_definition: <<-SQL
+      SELECT wants.id AS want_id,
+      wants.user_id,
+      v_characters.category_name,
+      v_characters.goods_name,
+      v_characters.character_name,
+      v_characters.category_id,
+      v_characters.good_id,
+      v_characters.character_id
+     FROM (wants
+       JOIN v_characters ON ((wants.character_id = v_characters.character_id)))
+    ORDER BY wants.user_id, v_characters.category_id, v_characters.good_id, v_characters.character_id;
+  SQL
+  create_view "v_stocks", sql_definition: <<-SQL
+      SELECT stocks.id AS want_id,
+      stocks.user_id,
+      v_characters.category_name,
+      v_characters.goods_name,
+      v_characters.character_name,
+      v_characters.category_id,
+      v_characters.good_id,
+      v_characters.character_id
+     FROM (stocks
+       JOIN v_characters ON ((stocks.character_id = v_characters.character_id)))
+    ORDER BY stocks.user_id, v_characters.category_id, v_characters.good_id, v_characters.character_id;
+  SQL
 end
