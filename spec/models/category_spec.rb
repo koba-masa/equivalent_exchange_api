@@ -21,9 +21,9 @@ RSpec.describe Category do
     end
 
     context 'when name is not unique' do
-      subject { build(:category) }
+      subject { build(:category, name: 'カテゴリー') }
 
-      before { create(:category) }
+      before { create(:category, name: 'カテゴリー') }
 
       it { is_expected.to be_invalid }
     end

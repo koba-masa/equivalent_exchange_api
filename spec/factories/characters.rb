@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :character do
     good
-    name { 'キャラクター1' }
+    sequence(:name) { |n| "キャラクター#{n}" }
   end
 end
