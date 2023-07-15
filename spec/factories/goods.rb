@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :good do
     category
-    name { '商品1' }
+    sequence(:name) { |n| "商品#{n}" }
   end
 end

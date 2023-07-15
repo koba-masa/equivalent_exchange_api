@@ -27,10 +27,10 @@ RSpec.describe Character do
     end
 
     context 'when character is not unique in good' do
-      subject { build(:character, good:) }
+      subject { build(:character, good:, name: '商品') }
 
       let(:good) { create(:good) }
-      let(:character) { create(:character, good:) }
+      let(:character) { create(:character, good:, name: '商品') }
 
       before { character }
 
