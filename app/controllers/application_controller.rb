@@ -18,8 +18,11 @@ class ApplicationController < ActionController::Base
       return
     end
 
-    user_id = decoded_token.first['sub']
-    @current_user = User.find_by(id: user_id)
-    render json: {}, status: :unauthorized if @current_user.blank?
+    @user_id = decoded_token.first['sub']
+    render json: {}, status: :unauthorized if current_user.blank?
+  end
+
+  def current_user
+    @current_user ||= User.find_by(id: @user_id)
   end
 end
