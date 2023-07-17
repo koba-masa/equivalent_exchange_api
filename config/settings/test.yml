@@ -4,3 +4,5 @@ cors:
 stock:
   image:
     domain: 'http://localhost:3000'
+jwt:
+  private_key: auth/test.key

@@ -14,3 +14,9 @@ docker-compose exec app bundle install
 ```sh
 docker-compose exec app bundle exec rails g scenic:view <view_name>
 ```
+
+## JWT
+### 作成
+```sh
+openssl genrsa 2024 > auth/service.key
+```

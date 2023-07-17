@@ -1,3 +1,6 @@
 aws:
   s3:
     stock_image_prefix: stocks/image
+jwt:
+  issuer: equivalent_exchange_api
+  algorithm: RS256

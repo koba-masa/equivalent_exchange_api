@@ -3,6 +3,8 @@
 module V1
   module User
     class WantsController < ApplicationController
+      before_action :check_authentication
+
       def index
         @wants = ::Want.where(user_id: user.id).includes(character: { good: :category })
       end

@@ -1,0 +1,2 @@
+jwt:
+  private_key: auth/private.test.key

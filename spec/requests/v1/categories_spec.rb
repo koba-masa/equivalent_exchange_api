@@ -3,8 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe 'V1::Categories' do
+  let(:headers) do
+    {
+      'Authorization' => "Bearer #{login(user.id)}",
+    }
+  end
+  let(:user) { create(:user) }
+
   describe 'GET /v1/categories/index' do
-    subject(:get_categories) { get v1_categories_url }
+    subject(:get_categories) { get v1_categories_url, headers: }
 
     shared_examples 'normal get categies' do
       it do
@@ -45,7 +52,7 @@ RSpec.describe 'V1::Categories' do
   end
 
   describe 'POST /v1/categories' do
-    subject(:create_category) { post v1_categories_url, params: }
+    subject(:create_category) { post v1_categories_url, params:, headers: }
 
     context 'when the category is created' do
       let(:params) { { category: { name: 'カテゴリA' } } }

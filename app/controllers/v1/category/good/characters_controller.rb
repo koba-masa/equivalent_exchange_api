@@ -4,6 +4,8 @@ module V1
   module Category
     module Good
       class CharactersController < ApplicationController
+        before_action :check_authentication
+
         def index
           @characters = Character.joins(good: :category).where('categories.id = ? and goods.id = ?', category_id,
                                                                good_id).includes(good: :category)
