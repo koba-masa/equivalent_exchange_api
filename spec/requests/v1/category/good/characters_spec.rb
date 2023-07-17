@@ -3,8 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe 'V1::Category::Good::Characters' do
+  let(:headers) { { 'Authorization' => "Bearer #{login(user.id)}" } }
+  let(:user) { create(:user) }
+
   describe 'GET /v1/categories/:category_id/goods/:good_id/characters' do
-    subject(:get_characters) { get v1_category_good_characters_path(category_id:, good_id:) }
+    subject(:get_characters) { get v1_category_good_characters_path(category_id:, good_id:), headers: }
 
     let(:category) { create(:category) }
     let(:good) { create(:good, category:) }
@@ -85,7 +88,7 @@ RSpec.describe 'V1::Category::Good::Characters' do
   end
 
   describe 'POST /v1/categories/:category_id/goods/:good_id/characters' do
-    subject(:create_characters) { post v1_category_good_characters_path(category_id:, good_id:), params: }
+    subject(:create_characters) { post v1_category_good_characters_path(category_id:, good_id:), params:, headers: }
 
     let(:category) { create(:category) }
     let(:good) { create(:good, category:) }

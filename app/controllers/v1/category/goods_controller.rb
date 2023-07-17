@@ -3,6 +3,8 @@
 module V1
   module Category
     class GoodsController < ApplicationController
+      before_action :check_authentication
+
       def index
         @goods = ::Good.where(category_id:).includes(:category)
       end

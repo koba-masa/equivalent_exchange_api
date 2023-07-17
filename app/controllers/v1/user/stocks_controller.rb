@@ -3,6 +3,8 @@
 module V1
   module User
     class StocksController < ApplicationController
+      before_action :check_authentication
+
       def index
         @stocks = ::Stock.where(user_id: user.id).includes(character: { good: :category })
       end

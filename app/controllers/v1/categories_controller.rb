@@ -2,6 +2,8 @@
 
 module V1
   class CategoriesController < ApplicationController
+    before_action :check_authentication
+
     def index
       @categories = ::Category.all
     end

@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'V1::User::Wants' do
+  let(:headers) { { 'Authorization' => "Bearer #{login(user_id)}" } }
   let(:user) { create(:user, display_name: 'テスト用ユーザ') }
   let(:another_user1) { create(:user, display_name: '別ユーザ1') }
   let(:another_user2) { create(:user, display_name: '別ユーザ2') }
@@ -14,7 +15,7 @@ RSpec.describe 'V1::User::Wants' do
   let(:character2) { create(:character, name: 'キャラクター2', good: good2) }
 
   describe 'GET /v1/users/:user_id/wants' do
-    subject(:get_wants) { get v1_user_wants_path(user_id:) }
+    subject(:get_wants) { get v1_user_wants_path(user_id:), headers: }
 
     let(:user_id) { user.id }
 
@@ -59,7 +60,7 @@ RSpec.describe 'V1::User::Wants' do
   end
 
   describe 'GET /v1/users/:user_id/wants/:id' do
-    subject(:get_want) { get v1_user_want_path(user_id:, id: want_id) }
+    subject(:get_want) { get v1_user_want_path(user_id:, id: want_id), headers: }
 
     let(:user_id) { user.id }
     let(:want_with_stocks) { create(:want, user:, character: character1, status: 0) }
@@ -157,7 +158,7 @@ RSpec.describe 'V1::User::Wants' do
   end
 
   describe 'POST /v1/users/:user_id/wants' do
-    subject(:create_want) { post v1_user_wants_path(user_id:), params: }
+    subject(:create_want) { post v1_user_wants_path(user_id:), params:, headers: }
 
     let(:user_id) { user.id }
 
@@ -214,7 +215,7 @@ RSpec.describe 'V1::User::Wants' do
   end
 
   describe 'PATCH /v1/users/:user_id/wants/:id' do
-    subject(:update_want) { patch v1_user_want_path(user_id:, id: want_id), params: }
+    subject(:update_want) { patch v1_user_want_path(user_id:, id: want_id), params:, headers: }
 
     let(:user_id) { user.id }
 
