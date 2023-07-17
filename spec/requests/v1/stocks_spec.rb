@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'V1::User::Stocks' do
+RSpec.describe 'V1::Stocks' do
   let(:headers) { { 'Authorization' => "Bearer #{login(user_id)}" } }
   let(:user) { create(:user, display_name: 'テスト用ユーザ') }
   let(:another_user) { create(:user, display_name: '別ユーザ') }
@@ -13,8 +13,8 @@ RSpec.describe 'V1::User::Stocks' do
   let(:character1) { create(:character, name: 'キャラクター1', good: good1) }
   let(:character2) { create(:character, name: 'キャラクター2', good: good2) }
 
-  describe 'GET /v1/users/:user_id/stocks' do
-    subject(:get_stocks) { get v1_user_stocks_path(user_id:), headers: }
+  describe 'GET /v1/stocks' do
+    subject(:get_stocks) { get v1_stocks_path, headers: }
 
     let(:user_id) { user.id }
 
@@ -58,8 +58,8 @@ RSpec.describe 'V1::User::Stocks' do
     end
   end
 
-  describe 'GET /v1/users/:user_id/stocks/:id' do
-    subject(:get_stock) { get v1_user_stock_path(user_id:, id: stock_id), headers: }
+  describe 'GET /v1/stocks/:id' do
+    subject(:get_stock) { get v1_stock_path(user_id:, id: stock_id), headers: }
 
     let(:user_id) { user.id }
     let(:stock) { create(:stock, user:, character: character1, status: 0) }
@@ -104,8 +104,8 @@ RSpec.describe 'V1::User::Stocks' do
     end
   end
 
-  describe 'POST /v1/users/:user_id/stocks' do
-    subject(:create_stock) { post v1_user_stocks_path(user_id:), params:, headers: }
+  describe 'POST /v1/stocks' do
+    subject(:create_stock) { post v1_stocks_path, params:, headers: }
 
     let(:user_id) { user.id }
 
@@ -161,8 +161,8 @@ RSpec.describe 'V1::User::Stocks' do
     end
   end
 
-  describe 'PATCH /v1/users/:user_id/stocks/:id' do
-    subject(:update_stock) { patch v1_user_stock_path(user_id:, id: stock_id), params:, headers: }
+  describe 'PATCH /v1/stocks/:id' do
+    subject(:update_stock) { patch v1_stock_path(user_id:, id: stock_id), params:, headers: }
 
     let(:user_id) { user.id }
 
