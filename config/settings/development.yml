@@ -1,3 +1,6 @@
+cors:
+  origins:
+    - '*'
 stock:
   image:
     domain: 'http://localhost:3000'
