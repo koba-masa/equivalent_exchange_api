@@ -37,5 +37,7 @@ module App
     config.generators.system_tests = nil
 
     config.relative_url_root = ENV.fetch('RAILS_RELATIVE_URL_ROOT', '/')
+
+    config.middleware.use ActionDispatch::Cookies
   end
 end
