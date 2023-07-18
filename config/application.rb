@@ -36,6 +36,9 @@ module App
     # Don't generate system test files.
     config.generators.system_tests = nil
 
+    # TODO: いつかちゃんとやる
+    config.action_controller.allow_forgery_protection = false
+
     config.relative_url_root = ENV.fetch('RAILS_RELATIVE_URL_ROOT', '/')
 
     config.middleware.use ActionDispatch::Cookies

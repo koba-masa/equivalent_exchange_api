@@ -17,7 +17,7 @@ module V1
       rsa_private = OpenSSL::PKey::RSA.new(Rails.root.join(Settings.jwt.private_key).read)
       token = JWT.encode(payload, rsa_private, Settings.jwt.algorithm)
 
-      render json: { token: }, status: :created
+      render json: { token: }, status: :ok
     end
 
     private
