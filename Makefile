@@ -1,4 +1,4 @@
-.PHONY: install, test, lint, format
+.PHONY: install, test, lint, format, console
 
 install:
 	docker-compose exec app bundle install
@@ -11,3 +11,6 @@ lint:
 
 format:
 	docker-compose exec app bundle exec rubocop -A
+
+console:
+	docker-compose exec app bundle exec rails c
