@@ -14,3 +14,6 @@ format:
 
 console:
 	docker-compose exec app bundle exec rails c
+
+seed:
+	docker-compose exec app bundle exec rails db:seed
