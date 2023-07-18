@@ -5,4 +5,4 @@ stock:
   image:
     domain: 'http://localhost:3000'
 jwt:
-  private_key: auth/private.test.key
+  private_key: auth/private.key
