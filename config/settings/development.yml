@@ -3,6 +3,6 @@ cors:
     - '*'
 stock:
   image:
-    domain: 'http://localhost:3000'
+    domain: 'http://localhost:3000/equivalent_exchange'
 jwt:
   private_key: auth/private.key
