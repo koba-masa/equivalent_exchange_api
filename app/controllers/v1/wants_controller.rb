@@ -10,6 +10,7 @@ module V1
 
     def show
       @want = ::Want.find_by!(user_id: current_user.id, id: want_id)
+      @candidates = ::VMatching.candidate_matchings_by_want(current_user.id, @want.id)
     rescue ActiveRecord::RecordNotFound
       render json: {}, status: :not_found
     end
