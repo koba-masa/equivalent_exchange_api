@@ -1,4 +1,4 @@
-.PHONY: install, test, lint, format, console
+.PHONY: install, test, lint, format, console, bash
 
 install:
 	docker-compose exec app bundle install
@@ -17,3 +17,6 @@ console:
 
 seed:
 	docker-compose exec app bundle exec rails db:seed
+
+bash:
+	docker-compose exec app bash
