@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_14_161144) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_20_134853) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -124,6 +124,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_161144) do
       v_characters.goods_name,
       v_characters.character_name,
       stocks.status,
+      stocks.image,
       v_characters.category_id,
       v_characters.good_id,
       v_characters.character_id
@@ -134,6 +135,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_161144) do
   create_view "v_matchings", sql_definition: <<-SQL
       SELECT my_wants.user_id AS my_user_id,
       your_stocks.user_id AS your_user_id,
+      your_users.display_name AS your_user_name,
       my_wants.category_id,
       my_wants.category_name,
       my_wants.good_id,
@@ -143,6 +145,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_161144) do
       my_wants.character_name AS my_want_character_name,
       my_wants.status AS my_status,
       your_stocks.stock_id AS your_stock_id,
+      your_stocks.image AS your_stock_image,
       your_stocks.status AS your_stock_status,
       your_wants.want_id AS your_want_id,
       your_wants.character_id AS your_want_character_id,
@@ -150,10 +153,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_161144) do
       your_wants.status AS your_want_status,
       my_stocks.stock_id AS my_stock_id,
       my_stocks.status AS my_stock_status
-     FROM (((v_wants my_wants
+     FROM ((((v_wants my_wants
        JOIN v_stocks your_stocks ON (((my_wants.character_id = your_stocks.character_id) AND (your_stocks.status = 0) AND (my_wants.user_id <> your_stocks.user_id))))
        JOIN v_wants your_wants ON (((your_wants.user_id = your_stocks.user_id) AND (my_wants.good_id = your_wants.good_id) AND (your_wants.status = 0))))
        JOIN v_stocks my_stocks ON (((my_wants.user_id = my_stocks.user_id) AND (my_wants.good_id = my_stocks.good_id) AND (your_wants.character_id = my_stocks.character_id) AND (my_stocks.status = 0))))
+       JOIN users your_users ON ((your_users.id = your_stocks.user_id)))
     WHERE (my_wants.status = 0)
     ORDER BY my_wants.user_id, your_stocks.user_id, my_wants.category_id, my_wants.good_id, my_wants.character_id, your_wants.character_id;
   SQL
