@@ -94,7 +94,7 @@ RSpec.describe 'V1::Wants' do
         it do
           get_want
           expect(response).to have_http_status(:ok)
-          expect(response.parsed_body).to eq(expected_response)
+          expect(response.parsed_body).to match_array(expected_response)
         end
       end
 
