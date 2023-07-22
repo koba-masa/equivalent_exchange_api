@@ -67,3 +67,10 @@ RSpec/NestedGroups:
 
 RSpec/ExampleLength:
   Enabled: false
+
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+    - but

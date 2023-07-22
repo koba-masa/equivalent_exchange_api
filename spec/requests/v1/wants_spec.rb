@@ -109,18 +109,20 @@ RSpec.describe 'V1::Wants' do
             'status' => my_want1.status_label,
             'candidates' => [
               {
-                'stock_id' => another_user1_stock.id,
+                'your_stock_id' => another_user1_stock.id,
                 'user_name' => another_user1_stock.user.display_name,
                 'image' => another_user1_stock.image_url,
                 'your_want_id' => another_user1_want.id,
                 'your_want_character_name' => another_user1_want.character.name,
+                'my_stock_id' => my_stock1.id,
               },
               {
-                'stock_id' => another_user2_stock.id,
+                'your_stock_id' => another_user2_stock.id,
                 'user_name' => another_user2_stock.user.display_name,
                 'image' => another_user2_stock.image_url,
                 'your_want_id' => another_user2_want.id,
                 'your_want_character_name' => another_user2_want.character.name,
+                'my_stock_id' => my_stock1.id,
               },
             ],
           }
