@@ -59,8 +59,12 @@ RSpec.describe 'V1::Tradings' do
         it 'returns ok' do
           create_tradings
           expect(response).to have_http_status(:ok)
-          expect(Trading.find_by(want: my_want, stock: your_stock_untrading)).to be_present
-          expect(Trading.find_by(want: your_want, stock: my_stock)).to be_present
+          my_trading = Trading.find_by(want: my_want, stock: your_stock_untrading)
+          your_trading = Trading.find_by(want: your_want, stock: my_stock)
+          expect(my_trading).to be_present
+          expect(my_trading.trading).to eq(your_trading)
+          expect(your_trading).to be_present
+          expect(your_trading.trading).to eq(my_trading)
           expect(my_want.reload).to be_trading
           expect(my_stock.reload).to be_trading
           expect(your_stock_untrading.reload).to be_trading

@@ -24,7 +24,9 @@ module V1
           want: lock_want(matching.your_want_id, :untrading),
           stock: lock_stock(matching.my_stock_id, :untrading),
           status: :trading,
+          trading: @my_trading,
         )
+        @my_trading.update(trading: @your_trading)
       end
 
       render json: {}, status: :ok

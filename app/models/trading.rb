@@ -3,6 +3,7 @@
 class Trading < ApplicationRecord
   belongs_to :want
   belongs_to :stock
+  belongs_to :trading, optional: true
 
   before_save :update_want_stock_status_to_trading
   before_create :update_want_stock_status_to_trading

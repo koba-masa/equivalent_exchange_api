@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_20_145500) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_23_053159) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -57,7 +57,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_20_145500) do
     t.integer "status", default: 20, null: false, comment: "ステータス"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "trading_id", comment: "交換"
     t.index ["stock_id"], name: "index_tradings_on_stock_id"
+    t.index ["trading_id"], name: "index_tradings_on_trading_id"
     t.index ["want_id"], name: "index_tradings_on_want_id"
   end
 
@@ -87,6 +89,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_20_145500) do
   add_foreign_key "stocks", "characters"
   add_foreign_key "stocks", "users"
   add_foreign_key "tradings", "stocks"
+  add_foreign_key "tradings", "tradings"
   add_foreign_key "tradings", "wants"
   add_foreign_key "wants", "characters"
   add_foreign_key "wants", "users"
