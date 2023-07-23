@@ -125,9 +125,9 @@ RSpec.describe VMatching do
     end
   end
 
-  describe 'self.find_candidate_matching' do
+  describe 'self.find_candidate_matching!' do
     subject(:find_candidate_matching) do
-      described_class.find_candidate_matching(my_user_id, my_want_id, your_stock_id, your_want_id, my_stock_id)
+      described_class.find_candidate_matching!(my_user_id, my_want_id, your_stock_id, your_want_id, my_stock_id)
     end
 
     let(:my_user_id) { myself.id }
@@ -150,8 +150,8 @@ RSpec.describe VMatching do
     context 'when candidate matching does not exist' do
       let(:your_stock_id) { 0 }
 
-      it 'return nil' do
-        expect(find_candidate_matching).to be_nil
+      it 'raise ActiveRecord::RecordNotFound' do
+        expect { find_candidate_matching }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

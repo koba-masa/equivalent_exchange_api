@@ -10,8 +10,8 @@ class VMatching < ApplicationRecord
     where(my_user_id:, my_want_id:)
   end
 
-  def self.find_candidate_matching(my_user_id, my_want_id, your_stock_id, your_want_id, my_stock_id)
-    find_by(my_user_id:, my_want_id:, your_stock_id:, your_want_id:, my_stock_id:)
+  def self.find_candidate_matching!(my_user_id, my_want_id, your_stock_id, your_want_id, my_stock_id)
+    find_by!(my_user_id:, my_want_id:, your_stock_id:, your_want_id:, my_stock_id:)
   end
 
   def image_url

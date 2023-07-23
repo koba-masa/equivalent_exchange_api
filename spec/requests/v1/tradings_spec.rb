@@ -33,7 +33,7 @@ RSpec.describe 'V1::Tradings' do
 
     shared_examples 'can not lock record' do
       it do
-        allow(VMatching).to receive(:find_candidate_matching).and_wrap_original do |method, *args|
+        allow(VMatching).to receive(:find_candidate_matching!).and_wrap_original do |method, *args|
           original_result = method.call(*args)
           Stock.find_by(id: stock.id).update(status: :trading)
           original_result
@@ -112,7 +112,7 @@ RSpec.describe 'V1::Tradings' do
         it 'returns not_found' do
           create_tradings
           expect(response).to have_http_status(:not_found)
-          expect(response.parsed_body['errors']).to eq({})
+          expect(response.parsed_body['errors']).to eq({ 'message' => '状態が更新されてしまいました' })
         end
       end
     end
