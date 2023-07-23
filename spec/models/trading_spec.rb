@@ -40,6 +40,35 @@ RSpec.describe Trading do
     end
   end
 
+  describe 'approve' do
+    subject(:approve_trading) { my_trading.approve!() }
+
+    let(:my_trading) { create(:trading, want: my_want, stock: your_stock) }
+
+    context 'with status trading' do
+      it 'update status to traded' do
+        approve_trading
+        expect(my_trading).to be_traded
+      end
+
+      it 'update wnat and stock status to traded' do
+        approve_trading
+        expect(my_want).to be_traded
+        expect(your_stock).to be_traded
+      end
+    end
+
+    context 'with status other than trading' do
+      before do
+        my_trading.update(status: :traded)
+      end
+
+      it 'raise error' do
+        expect { approve_trading }.to raise_error(StandardError)
+      end
+    end
+  end
+
   describe 'callbacks' do
     before do
       my_want
@@ -81,37 +110,12 @@ RSpec.describe Trading do
       end
     end
 
-    context 'when before_update' do
-      context 'with updating status to traded' do
-        subject(:update_trading) do
-          traging.update(status: :traded)
-        end
-
-        let!(:traging) { create(:trading, want: my_want, stock: your_stock) }
-
-        it 'update trading status to traded' do
-          update_trading
-          expect(traging).to be_traded
-        end
-
-        it 'update wnat and stock status to traded' do
-          update_trading
-          expect(my_want).to be_traded
-          expect(your_stock).to be_traded
-        end
-      end
-
-      context 'with updating other than status' do
-        pending "add some examples (or delete) #{__FILE__}"
-      end
-    end
-
     context 'when before_destroy' do
       subject(:destroy_trading) do
-        traging.destroy
+        trading.destroy
       end
 
-      let!(:traging) { create(:trading, want: my_want, stock: your_stock) }
+      let!(:trading) { create(:trading, want: my_want, stock: your_stock) }
 
       it 'update trading status to traded' do
         expect { destroy_trading }.to change { described_class.all.count }.from(1).to(0)

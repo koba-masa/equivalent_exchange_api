@@ -24,7 +24,9 @@ module V1
           want: lock_want(matching.your_want_id, :untrading),
           stock: lock_stock(matching.my_stock_id, :untrading),
           status: :trading,
+          trading: @my_trading,
         )
+        @my_trading.update(trading: @your_trading)
       end
 
       render json: {}, status: :ok
@@ -33,7 +35,28 @@ module V1
       render json: { errors: { message: '状態が更新されてしまいました' } }, status: :not_found
     end
 
-    def update; end
+    def approve
+      # デッドロックが発生するパターン
+      ActiveRecord::Base.transaction do
+        your_trading = Trading.lock.find(params[:id])
+        your_trading.approve!
+        your_trading.trading.approve!
+      end
+      render json: {}, status: :ok
+    rescue ActiveRecord::RecordNotFound
+      # 被申請者が申請を承認する前に申請者が取り下げを行なった場合
+      render json: { errors: { message: '状態が更新されてしまいました' } }, status: :not_found
+    rescue StandardError => e
+      #
+    end
+
+    def update
+      # 完了した場合
+    end
+
+    def destroy
+      # 拒否した場合
+    end
 
     private
 

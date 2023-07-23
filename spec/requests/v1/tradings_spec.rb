@@ -59,8 +59,12 @@ RSpec.describe 'V1::Tradings' do
         it 'returns ok' do
           create_tradings
           expect(response).to have_http_status(:ok)
-          expect(Trading.find_by(want: my_want, stock: your_stock_untrading)).to be_present
-          expect(Trading.find_by(want: your_want, stock: my_stock)).to be_present
+          my_trading = Trading.find_by(want: my_want, stock: your_stock_untrading)
+          your_trading = Trading.find_by(want: your_want, stock: my_stock)
+          expect(my_trading).to be_present
+          expect(my_trading.trading).to eq(your_trading)
+          expect(your_trading).to be_present
+          expect(your_trading.trading).to eq(my_trading)
           expect(my_want.reload).to be_trading
           expect(my_stock.reload).to be_trading
           expect(your_stock_untrading.reload).to be_trading
@@ -118,7 +122,46 @@ RSpec.describe 'V1::Tradings' do
     end
   end
 
+  describe 'PATCH /v1/tradings/:id/approve' do
+    subject(:approve_trading) { patch approve_v1_trading_path(my_trading.id) }
+
+    let(:my_want) { create(:want, user:, character: character2, status: :untrading) }
+    let(:my_stock) { create(:stock, user:, character: character1, status: :untrading) }
+    let(:your_want) { create(:want, user: another_user, character: character1, status: :trading) }
+    let(:your_stock) { create(:stock, user: another_user, character: character2, status: :trading) }
+    let(:my_trading) { create(:trading, want: my_want, stock: your_stock, status: :trading) }
+    let(:your_trading) { create(:trading, want: your_want, stock: my_stock, status: :trading, trading: my_trading) }
+
+    before do
+      my_trading
+      your_trading
+
+      my_trading.update(trading: your_trading)
+    end
+
+    context 'when approve trading' do
+      it 'returns ok' do
+        approve_trading
+        expect(response).to have_http_status(:ok)
+        expect(my_trading.reload.traded?).to be_truthy
+        expect(my_want.reload.traded?).to be_truthy
+        expect(your_stock.reload.traded?).to be_truthy
+        expect(your_trading.reload.traded?).to be_truthy
+        expect(your_want.reload.traded?).to be_truthy
+        expect(my_stock.reload.traded?).to be_truthy
+      end
+
+      context 'but updated your trading' do
+        pending "add some examples (or delete) #{__FILE__}"
+      end
+    end
+  end
+
   describe 'PATCH /v1/tradings/:id' do
+    pending "add some examples (or delete) #{__FILE__}"
+  end
+
+  describe 'DELETE /v1/tradings/:id' do
     pending "add some examples (or delete) #{__FILE__}"
   end
 end
