@@ -61,7 +61,7 @@ RSpec.describe Dealing do
   end
 
   describe 'applicate' do
-    subject(:applicatee) do
+    subject(:applicate) do
       described_class.applicate(
         applicant,
         partner,
@@ -73,22 +73,22 @@ RSpec.describe Dealing do
     end
 
     it 'insert dealing' do
-      expect { applicatee }.to change { described_class.all.count }.from(0).to(1)
-      expect(applicatee.class).to eq(described_class)
-      expect(applicatee).to be_application
+      expect { applicate }.to change { described_class.all.count }.from(0).to(1)
+      expect(applicate.class).to eq(described_class)
+      expect(applicate).to be_application
     end
 
     it 'update want and stock status to trading' do
-      applicatee
-      expect(applicatee.applicant_want).to be_trading
-      expect(applicatee.partner_stock).to be_trading
-      expect(applicatee.partner_want).to be_trading
-      expect(applicatee.applicant_stock).to be_trading
+      applicate
+      expect(applicate.applicant_want).to be_trading
+      expect(applicate.partner_stock).to be_trading
+      expect(applicate.partner_want).to be_trading
+      expect(applicate.applicant_stock).to be_trading
     end
 
     shared_examples 'status is not untrading' do
       it 'raise ActiveRecord::RecordNotFound' do
-        expect { applicatee }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { applicate }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
