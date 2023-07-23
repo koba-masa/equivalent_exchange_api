@@ -7,7 +7,6 @@ class Trading < ApplicationRecord
 
   before_save :update_want_stock_status_to_trading
   before_create :update_want_stock_status_to_trading
-  before_update :update_want_stock_status_to_traded, if: :update_status_to_traded?
   before_destroy :update_want_stock_status_to_untrading
 
   validates :status, presence: true
@@ -26,17 +25,16 @@ class Trading < ApplicationRecord
     stock.update(status: :trading)
   end
 
-  def update_want_stock_status_to_traded
-    want.update(status: :traded)
-    stock.update(status: :traded)
-  end
-
   def update_want_stock_status_to_untrading
     want.update(status: :untrading)
     stock.update(status: :untrading)
   end
 
-  def update_status_to_traded?
-    status_changed? && traded?
+  def approve!
+    # TODO: 例外を別途定義する
+    raise StandardError unless trading?
+    update(status: :traded)
+    want.update(status: :traded)
+    stock.update(status: :traded)
   end
 end
