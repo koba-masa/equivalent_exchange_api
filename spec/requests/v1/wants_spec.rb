@@ -94,7 +94,7 @@ RSpec.describe 'V1::Wants' do
         it do
           get_want
           expect(response).to have_http_status(:ok)
-          expect(response.parsed_body).to match_array(expected_response)
+          expect(response.parsed_body).to match(expected_response)
         end
       end
 
@@ -107,7 +107,7 @@ RSpec.describe 'V1::Wants' do
             'character_name' => my_want1.character.name,
             'id' => my_want1.id,
             'status' => my_want1.status_label,
-            'candidates' => [
+            'candidates' => contain_exactly(
               {
                 'your_stock_id' => another_user1_stock.id,
                 'user_name' => another_user1_stock.user.display_name,
@@ -115,16 +115,15 @@ RSpec.describe 'V1::Wants' do
                 'your_want_id' => another_user1_want.id,
                 'your_want_character_name' => another_user1_want.character.name,
                 'my_stock_id' => my_stock1.id,
-              },
-              {
+              }, {
                 'your_stock_id' => another_user2_stock.id,
                 'user_name' => another_user2_stock.user.display_name,
                 'image' => another_user2_stock.image_url,
                 'your_want_id' => another_user2_want.id,
                 'your_want_character_name' => another_user2_want.character.name,
                 'my_stock_id' => my_stock1.id,
-              },
-            ],
+              }
+            ),
           }
         end
 
