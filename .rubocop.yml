@@ -53,6 +53,9 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
 
+Metrics/ParameterLists:
+  Max: 6
+
 RSpec/IndexedLet:
   Enabled: false
 

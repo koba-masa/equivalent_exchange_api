@@ -5,8 +5,8 @@ module V1
     # 相手の欲しいものをチェックする
     # 相手の欲しいグッズであること
     def create
-      matching = VMatching.untrading.find_candidate_matching(user.id, my_want_id, your_stock_id, your_want_id,
-                                                             my_stock_id)
+      matching = VMatching.untrading.find_candidate_matching!(user.id, my_want_id, your_stock_id, your_want_id,
+                                                              my_stock_id)
 
       if matching.blank?
         # TODO: エラーメッセージの実装を行う&ステータスコードの見直しを行う
