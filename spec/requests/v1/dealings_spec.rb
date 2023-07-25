@@ -93,5 +93,37 @@ RSpec.describe 'V1::Dealings' do
       end
     end
   end
-  # pending "add some examples (or delete) #{__FILE__}"
+
+  describe 'DELETE /v1/dealings/:id' do
+    subject(:deny_dealings) { delete v1_dealing_path(dealing.id), headers: }
+
+    let(:dealing) do
+      create(
+        :dealing,
+        applicant_want:,
+        partner_stock:,
+        partner_want:,
+        applicant_stock:,
+      )
+    end
+
+    context 'when partner deny dealing' do
+      let(:user) { partner }
+
+      it 'returns 200' do
+        deny_dealings
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when other than partner deny dealing' do
+      let(:user) { applicant }
+
+      it 'returns 403' do
+        deny_dealings
+        expect(response).to have_http_status(:forbidden)
+        expect(dealing.reload).to be_application
+      end
+    end
+  end
 end

@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     resources :stocks, only: %i[index show create update]
     resources :wants, only: %i[index show create update]
     resources :tradings, only: %i[create update]
-    resources :dealings, only: %i[create] do
+    resources :dealings, only: %i[create destroy] do
       patch :approve, on: :member
     end
 

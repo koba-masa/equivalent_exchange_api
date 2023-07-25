@@ -49,6 +49,18 @@ class Dealing < ApplicationRecord
     end
   end
 
+  def deny(partner)
+    raise StandardError unless partner.id == partner_stock.user_id
+
+    ActiveRecord::Base.transaction do
+      applicant_want.update(status: :untrading)
+      partner_stock.update(status: :untrading)
+      partner_want.update(status: :untrading)
+      applicant_stock.update(status: :untrading)
+      destroy
+    end
+  end
+
   def self.lock_want(user, id, status)
     ::Want.lock.find_by!(user:, id:, status:)
   end

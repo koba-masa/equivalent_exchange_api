@@ -60,7 +60,7 @@ RSpec.describe Dealing do
     end
   end
 
-  describe 'applicate' do
+  describe 'self.applicate' do
     subject(:applicate) do
       described_class.applicate(
         applicant,
@@ -153,6 +153,46 @@ RSpec.describe Dealing do
 
       it 'raise StandardError' do
         expect { approve }.to raise_error(StandardError)
+      end
+    end
+  end
+
+  describe 'deny' do
+    subject(:deny) { dealing.deny(user) }
+
+    let(:dealing) do
+      create(
+        :dealing,
+        applicant_want:,
+        partner_stock:,
+        partner_want:,
+        applicant_stock:,
+      )
+    end
+
+    before { dealing }
+
+    context 'when partner approve dealing' do
+      let(:user) { partner }
+
+      it 'update dealing status to trading' do
+        expect { deny }.to change { described_class.all.size }.from(1).to(0)
+      end
+
+      it 'update want and stock status to trading' do
+        deny
+        expect(applicant_want).to be_untrading
+        expect(partner_stock).to be_untrading
+        expect(partner_want).to be_untrading
+        expect(applicant_stock).to be_untrading
+      end
+    end
+
+    context 'when other then partner approve dealing' do
+      let(:user) { applicant }
+
+      it 'raise StandardError' do
+        expect { deny }.to raise_error(StandardError)
       end
     end
   end

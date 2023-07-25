@@ -36,6 +36,14 @@ module V1
       render json: { errors: {} }, status: :forbidden
     end
 
+    def destroy
+      dealing = ::Dealing.find(params[:id])
+      dealing.deny(current_user)
+      render json: {}, status: :ok
+    rescue StandardError
+      render json: { errors: {} }, status: :forbidden
+    end
+
     private
 
     def applicant_want_id
