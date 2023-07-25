@@ -28,6 +28,14 @@ module V1
       render json: { errors: { message: '状態が更新されてしまいました' } }, status: :not_found
     end
 
+    def approve
+      dealing = ::Dealing.find(params[:id])
+      dealing.approve(current_user)
+      render json: {}, status: :ok
+    rescue StandardError
+      render json: { errors: {} }, status: :forbidden
+    end
+
     private
 
     def applicant_want_id

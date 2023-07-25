@@ -116,4 +116,44 @@ RSpec.describe Dealing do
       it_behaves_like 'status is not untrading'
     end
   end
+
+  describe 'approve' do
+    subject(:approve) { dealing.approve(user) }
+
+    let(:dealing) do
+      create(
+        :dealing,
+        applicant_want:,
+        partner_stock:,
+        partner_want:,
+        applicant_stock:,
+      )
+    end
+
+    context 'when partner approve dealing' do
+      let(:user) { partner }
+
+      it 'update dealing status to trading' do
+        approve
+        expect(dealing.reload).to be_approval
+      end
+
+      it 'update want and stock status to trading' do
+        approve
+        dealing.reload
+        expect(dealing.applicant_want).to be_traded
+        expect(dealing.partner_stock).to be_traded
+        expect(dealing.partner_want).to be_traded
+        expect(dealing.applicant_stock).to be_traded
+      end
+    end
+
+    context 'when other then partner approve dealing' do
+      let(:user) { applicant }
+
+      it 'raise StandardError' do
+        expect { approve }.to raise_error(StandardError)
+      end
+    end
+  end
 end

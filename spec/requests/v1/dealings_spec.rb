@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'V1::Dealings' do
   let(:headers) do
     {
-      'Authorization' => "Bearer #{login(applicant.id)}",
+      'Authorization' => "Bearer #{login(user.id)}",
     }
   end
   let(:applicant) { create(:user) }
@@ -21,6 +21,8 @@ RSpec.describe 'V1::Dealings' do
 
   describe 'POST /v1/dealings' do
     subject(:create_dealings) { post v1_dealings_path, params:, headers: }
+
+    let(:user) { applicant }
 
     context 'when applicant applicate dealing' do
       let(:params) do
@@ -58,5 +60,38 @@ RSpec.describe 'V1::Dealings' do
     end
   end
 
+  describe 'PATCH /v1/dealings/:id/approve' do
+    subject(:approve_dealings) { patch approve_v1_dealing_path(dealing.id), headers: }
+
+    let(:dealing) do
+      create(
+        :dealing,
+        applicant_want:,
+        partner_stock:,
+        partner_want:,
+        applicant_stock:,
+      )
+    end
+
+    context 'when partner approve dealing' do
+      let(:user) { partner }
+
+      it 'returns 200' do
+        approve_dealings
+        expect(response).to have_http_status(:ok)
+        expect(dealing.reload).to be_approval
+      end
+    end
+
+    context 'when other than partner approve dealing' do
+      let(:user) { applicant }
+
+      it 'returns 403' do
+        approve_dealings
+        expect(response).to have_http_status(:forbidden)
+        expect(dealing.reload).to be_application
+      end
+    end
+  end
   # pending "add some examples (or delete) #{__FILE__}"
 end
