@@ -1,62 +1,52 @@
 # frozen_string_literal: true
 
 class Dealing < ApplicationRecord
-  belongs_to :applicant_want, class_name: 'Want'
-  belongs_to :partner_stock, class_name: 'Stock'
-  belongs_to :partner_want, class_name: 'Want'
-  belongs_to :applicant_stock, class_name: 'Stock'
+  belongs_to :applicant, class_name: 'User'
+  belongs_to :want
+  belongs_to :stock
+  belongs_to :dealing, optional: true
 
   validates :status, presence: true
 
   enum status: { application: 20, approval: 30, trading: 40, traded: 50 }
 
-  STATUS_LABEL = { application: '申請中', approval: '承諾済み', dealing: '交換中', dealed: '交換済み' }.freeze
+  STATUS_LABEL = { application: '申請中', approval: '承諾済み', trading: '交換中', traded: '交換済み' }.freeze
 
   def status_label
     # TODO: i18nとかで管理したい
     STATUS_LABEL[status.to_sym]
   end
 
-  def self.applicate(applicant, partner, applicant_want_id, partner_stock_id, partner_want_id, applicant_stock_id)
+  def self.applicate(applicant, wanter, stocker, want_id, stock_id, dealing)
     ActiveRecord::Base.transaction do
-      applicant_want = lock_want(applicant, applicant_want_id, :untrading)
-      partner_stock = lock_stock(partner, partner_stock_id, :untrading)
-      partner_want = lock_want(partner, partner_want_id, :untrading)
-      applicant_stock = lock_stock(applicant, applicant_stock_id, :untrading)
-      partner_want.update(status: :trading)
-      partner_stock.update(status: :trading)
-      applicant_want.update(status: :trading)
-      applicant_stock.update(status: :trading)
+      want = lock_want(wanter, want_id, :untrading)
+      stock = lock_stock(stocker, stock_id, :untrading)
+      want.update(status: :trading)
+      stock.update(status: :trading)
       create(
-        applicant_want:,
-        partner_stock:,
-        partner_want:,
-        applicant_stock:,
+        applicant:,
+        want:,
+        stock:,
+        dealing:,
         status: :application,
       )
     end
   end
 
-  def approve(partner)
-    raise StandardError unless partner.id == partner_stock.user_id
-
+  def approve
     ActiveRecord::Base.transaction do
-      applicant_want.update(status: :traded)
-      partner_stock.update(status: :traded)
-      partner_want.update(status: :traded)
-      applicant_stock.update(status: :traded)
+      want.update(status: :traded)
+      stock.update(status: :traded)
       update(status: :approval)
     end
   end
 
-  def deny(partner)
-    raise StandardError unless partner.id == partner_stock.user_id
-
+  def deny
     ActiveRecord::Base.transaction do
-      applicant_want.update(status: :untrading)
-      partner_stock.update(status: :untrading)
-      partner_want.update(status: :untrading)
-      applicant_stock.update(status: :untrading)
+      concerned_dealing = ::Dealing.find_by(dealing: self)
+      concerned_dealing.update(dealing: nil) if concerned_dealing.present?
+      want.update(status: :untrading)
+      stock.update(status: :untrading)
       destroy
     end
   end
@@ -67,5 +57,18 @@ class Dealing < ApplicationRecord
 
   def self.lock_stock(user, id, status)
     ::Stock.lock.find_by!(user:, id:, status:)
+  end
+
+  def dealings
+    dealings = []
+    next_dealing = self
+
+    loop do
+      dealings.push(next_dealing)
+      next_dealing = next_dealing.dealing
+      break if next_dealing == self
+    end
+
+    dealings
   end
 end
