@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_23_100803) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_27_133619) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -32,17 +32,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_23_100803) do
   end
 
   create_table "dealings", comment: "取引履歴", force: :cascade do |t|
-    t.bigint "applicant_want_id", null: false, comment: "申請者の欲しいもの"
-    t.bigint "partner_stock_id", null: false, comment: "相手の在庫"
-    t.bigint "partner_want_id", null: false, comment: "相手の欲しいもの"
-    t.bigint "applicant_stock_id", null: false, comment: "申請者の在庫"
+    t.uuid "applicant_id", null: false, comment: "申請者"
+    t.bigint "want_id", null: false, comment: "欲しいもの"
+    t.bigint "stock_id", null: false, comment: "在庫"
+    t.bigint "dealing_id", comment: "取引履歴"
     t.integer "status", default: 20, null: false, comment: "ステータス"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["applicant_stock_id"], name: "index_dealings_on_applicant_stock_id"
-    t.index ["applicant_want_id"], name: "index_dealings_on_applicant_want_id"
-    t.index ["partner_stock_id"], name: "index_dealings_on_partner_stock_id"
-    t.index ["partner_want_id"], name: "index_dealings_on_partner_want_id"
+    t.index ["applicant_id"], name: "index_dealings_on_applicant_id"
+    t.index ["dealing_id"], name: "index_dealings_on_dealing_id"
+    t.index ["stock_id"], name: "index_dealings_on_stock_id"
+    t.index ["want_id"], name: "index_dealings_on_want_id"
   end
 
   create_table "goods", comment: "商品", force: :cascade do |t|
@@ -99,10 +99,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_23_100803) do
   end
 
   add_foreign_key "characters", "goods"
-  add_foreign_key "dealings", "stocks", column: "applicant_stock_id"
-  add_foreign_key "dealings", "stocks", column: "partner_stock_id"
-  add_foreign_key "dealings", "wants", column: "applicant_want_id"
-  add_foreign_key "dealings", "wants", column: "partner_want_id"
+  add_foreign_key "dealings", "dealings"
+  add_foreign_key "dealings", "stocks"
+  add_foreign_key "dealings", "users", column: "applicant_id"
+  add_foreign_key "dealings", "wants"
   add_foreign_key "goods", "categories"
   add_foreign_key "stocks", "characters"
   add_foreign_key "stocks", "users"
