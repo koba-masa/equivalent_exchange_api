@@ -26,3 +26,6 @@ migrate:
 
 rollback:
 	docker-compose exec app bundle exec rails db:rollback
+
+db_login:
+	docker-compose exec db psql -U postgres ee_development
