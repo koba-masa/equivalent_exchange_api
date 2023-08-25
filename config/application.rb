@@ -42,5 +42,7 @@ module App
     config.relative_url_root = ENV.fetch('RAILS_RELATIVE_URL_ROOT', '/')
 
     config.middleware.use ActionDispatch::Cookies
+
+    config.logger = Logger.new("log/#{Rails.env}.log", 'daily')
   end
 end
