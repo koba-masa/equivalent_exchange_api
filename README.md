@@ -20,3 +20,10 @@ docker-compose exec app bundle exec rails g scenic:view <view_name>
 ```sh
 openssl genrsa 2024 > auth/service.key
 ```
+
+## ログイン
+| ユーザー | パスワード |
+|:--|:--|
+| `testuser1` | `test123` |
+| `testuser2` | `test123` |
+| `testuser3` | `test123` |
